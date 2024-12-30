@@ -1,20 +1,20 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "src/server.ts",
+  "main": "server.ts",
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "docker compose up -d  && nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/server.ts",
     "build": "tsc",
-    "stop": "docker compose down"
+    "dev": "nodemon --watch src --exec ts-node src/server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "kafkajs": "^2.2.4",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
@@ -23,9 +23,9 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/node": "^22.10.1",
+    "@types/node": "^22.10.2",
     "@types/socket.io": "^3.0.1",
-    "nodemon": "^3.1.7",
+    "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }
