@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:8080"; // Replace with your server's URL
+const SOCKET_URL = import.meta.env.VITE_WEB_SOCKET_URL; // Replace with your server's URL
 
 // Create and export the socket instance
 export const socket: Socket = io(SOCKET_URL, {
