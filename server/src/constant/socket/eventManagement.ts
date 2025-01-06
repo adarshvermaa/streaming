@@ -1,0 +1,16 @@
+export const EVENT = {
+    CONNECTION: 'connection',
+    DISCONNECT: 'disconnect',
+    JOIN_ROOM: 'join-room',
+    LEAVE_ROOM: 'leave-room',
+    ROOM_CREATED: 'room-created',
+    ROOM_JOINED: 'room-joined',
+    ROOM_LEFT: 'room-left',
+    ROOM_FULL: 'room-full',
+    ROOM_NOT_FOUND: 'room-not-found',
+    ROOM_DESTROYED: 'room-destroyed',
+    ROOM_LIST: 'room-list',
+    ROOM_MESSAGE: 'room-message',
+    ROOM_MESSAGE_HISTORY: 'room-message-history',
+    ROOM_MESSAGE_HISTORY_REQUEST: 'room-message-history-request',
+};

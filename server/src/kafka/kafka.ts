@@ -1,6 +1,6 @@
 import { Kafka, Consumer, Producer } from 'kafkajs';
 import { Server } from 'socket.io';
-import { ENV } from '../env';
+import { ENV } from '../config/env';
 const kafka = new Kafka({
   clientId: 'socket-server',
   brokers: [ENV.KAFKA_BROKER],

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  server:
+    build: .
+    container_name: server-container
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    restart: always # Restart the server if it stops or crashes

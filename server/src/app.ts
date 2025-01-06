@@ -1,14 +1,26 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import sequelize from './config/database/database';
-import mrcRoutes from './mrc/routes';
-import { errorHandler } from './middileware/errorHandler';
-import { setupSocket } from './config/socket.io/socket';
+import { setupSocket } from './socket.io';
 import http from 'http';
 import { Server } from 'socket.io';
+import { loadRoutes } from './routes';
+import cors from 'cors';
+import db from './config/database/database';
 
-
+// Initialize database connection
+db
 const app = express();
+
+// Use body-parser for parsing JSON and URL-encoded bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors(
+  {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+));
 
 // Create HTTP server
 const httpServer = http.createServer(app);
@@ -22,6 +34,9 @@ const io = new Server(httpServer, {
   },
 });
 
+// Call the function to load the routes
+loadRoutes(app);
+
 // Initialize Socket.IO
 setupSocket(io);
 
@@ -29,15 +44,6 @@ setupSocket(io);
 app.get('/app', (req, res) => {
   res.send('Hello World');
 });
-
-// Sync Database
-sequelize.sync()
-  .then(() => {
-    console.log('Database connected and synced');
-  })
-  .catch((err) => {
-    console.error('Database connection failed:', err);
-  });
 
 
 
