@@ -1,3 +1,4 @@
+
 export const ERROR = {
     // General error
     SERVER_ERROR: 'Internal server error',
@@ -6,26 +7,7 @@ export const ERROR = {
     INVALID_REQUEST: 'Invalid request',
     INVALID_CREDENTIAL: 'Invalid credential',
     INVALID_TOKEN: 'Invalid token',
-    INVALID_DATA: 'Invalid data',
-    INVALID_PASSWORD: 'Invalid password',
-    INVALID_EMAIL: 'Invalid email',
-    INVALID_USERNAME: 'Invalid username',
-    INVALID_PHONE: 'Invalid phone',
-    INVALID_NAME: 'Invalid name',
-    INVALID_ADDRESS: 'Invalid address',
-    INVALID_ROLE: 'Invalid role',
-    INVALID_STATUS: 'Invalid status',
-    INVALID_TYPE: 'Invalid type',
-    INVALID_DATE: 'Invalid date',
-    INVALID_TIME: 'Invalid time',
-    INVALID_DURATION: 'Invalid duration',
-    INVALID_PRICE: 'Invalid price',
-    INVALID_QUANTITY: 'Invalid quantity',
-    INVALID_CATEGORY: 'Invalid category',
-    INVALID_SUBCATEGORY: 'Invalid subcategory',
-    INVALID_BRAND: 'Invalid brand',
-    INVALID_MODEL: 'Invalid model',
-    INVALID_COLOR: 'Invalid color',
-    INVALID_SIZE: 'Invalid size',
-    INVALID_WEIGHT: 'Invalid'
+    ALL_FIELDS_REQUIRED: 'All fields are required',
+    EMAIL_ALREADY_REGISTERED: 'Email is already registered',
+    USERNAME_ALREADY_REGISTERED: "Username is already registered",
 }
