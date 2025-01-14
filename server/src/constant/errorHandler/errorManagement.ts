@@ -10,4 +10,7 @@ export const ERROR = {
     ALL_FIELDS_REQUIRED: 'All fields are required',
     EMAIL_ALREADY_REGISTERED: 'Email is already registered',
     USERNAME_ALREADY_REGISTERED: "Username is already registered",
+    TOKEN_REQUIRED: "Token is required",
+    TOKEN_EXPIRED: "Token is expired",
+    INVALID_PASSWORD: "Invalid password",
 }

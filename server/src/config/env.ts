@@ -4,7 +4,7 @@ dotenv.config();
 
 interface EnvConfig {
   PORT: string | number;
-  HOST: string;
+  HOST?: string;
   DB_HOST: string;
   DB_PORT: number;
   DB_USER: string;
@@ -14,10 +14,17 @@ interface EnvConfig {
   KAFKA_TOPIC: string;
   KAFKA_GROUP_ID: string;
   NODE_ENV: string;
+  SMTP_PASSWORD: string;
+  SMTP_HOST: string;
+  SMTP_PORT: number;
+  SMTP_USER: string;
+  JWT_SECRET_KEY: string;
+  FRONTEND_URL: string;
 }
 
-export const ENV = {
+export const ENV: EnvConfig = {
   PORT: process.env.PORT || 4000,
+  HOST: process.env.HOST || 'localhost',
   DB_HOST: process.env.DB_HOST || 'localhost',
   DB_PORT: Number(process.env.DB_PORT) || 5432,
   DB_USER: process.env.DB_USER || 'postgres',
@@ -27,4 +34,10 @@ export const ENV = {
   KAFKA_TOPIC: process.env.KAFKA_TOPIC || 'socket-topic',
   KAFKA_GROUP_ID: process.env.KAFKA_GROUP_ID || 'socket-group',
   NODE_ENV: process.env.NODE_ENV || 'development',
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD || '',
+  SMTP_HOST: process.env.SMTP_HOST || '',
+  SMTP_PORT: Number(process.env.SMTP_PORT) || 587,
+  SMTP_USER: process.env.SMTP_USER || '',
+  JWT_SECRET_KEY: process.env.JWT_SECRET || '',
+  FRONTEND_URL: process.env.FRONTEND_URL || '',
 };
