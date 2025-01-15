@@ -1,10 +1,10 @@
 import { eq, or } from "drizzle-orm";
-import db from "../../config/database/database";
-import { UsersModel } from "../../models/users/users";
-import { UserType } from "../../type/users/users.type";
-import { ERROR } from "../../constant/errorHandler/errorManagement";
+import db from "../../../config/database/database";
+import { UsersModel } from "../../models/users_model/users.model";
+import { UserType } from "../../../type/users/users.type";
+import { ERROR } from "../../../constant/errorHandler/errorManagement";
 
-export const isValidUser = async (email: string, username: string) => {
+export const isValidUser = async ({ email, username }: { email: string, username: string }) => {
     try {
         // Check if the email exists
         if (email) {
@@ -88,4 +88,16 @@ export const resetPassword = async (email: string, password: string) => {
     })
 }
 
+
+export const updateDynamicUser = async (email: string, data: { [key: string]: any }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedUser = await db.update(UsersModel).set(data).where(eq(UsersModel.email, email)).returning();
+            resolve(updatedUser);
+        } catch (error) {
+            console.error("Error in updateDynamicUser:", error);
+            reject(error);
+        }
+    })
+}
 

@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import { setupSocket } from './socket.io';
 import http from 'http';
 import { Server } from 'socket.io';
-import { loadRoutes } from './routes';
+import { loadRoutes } from './main/routes';
 import cors from 'cors';
 import db from './config/database/database';
 
