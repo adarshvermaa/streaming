@@ -4,7 +4,7 @@
   "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/server.ts",
+    "start": "pm2-runtime start npm -- start",
     "build": "tsc",
     "dev": "docker-compose up -d && nodemon",
     "db:migrations": "npx drizzle-kit generate  --config src/drizzle/drizzle.config.ts",
