@@ -30,25 +30,44 @@ jobs:
           ssh -i "streamingAwsKey.pem" -o StrictHostKeyChecking=no ubuntu@${{ secrets.AWS_EC2_HOST }} << 'EOF'
           cd /home/ubuntu/app
 
+          # Ensure docker-compose.yml exists
+          if [ ! -f "docker-compose.yml" ]; then
+            echo "❌ Error: docker-compose.yml not found in /home/ubuntu/app"
+            exit 1
+          fi
+
+          # Ensure Node.js & npm are installed
+          if ! command -v node &> /dev/null; then
+            curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+          fi
+
+          # Ensure npm is available
+          export PATH=$PATH:/usr/local/bin
+
+          # Install PM2 globally if not installed
+          if ! command -v pm2 &> /dev/null; then
+            sudo npm install -g pm2
+          fi
+
+          # Install Docker Compose if missing
+          if ! command -v docker-compose &> /dev/null; then
+            sudo apt-get install -y docker-compose
+          fi
+
           # Stop old PM2 process if exists
           pm2 stop all || true
 
-          # Remove old containers
+          # Stop and remove old containers
           docker-compose down
 
           # Build and start new containers
           docker-compose up --build -d
 
-          # Ensure PM2 is installed
-          if ! command -v pm2 &> /dev/null
-          then
-              sudo npm install -g pm2
-          fi
-
           # Start the Node.js app with PM2 inside the container
-          pm2 start npm --name "server" -- run start
+          docker exec -it server-container pm2 start npm --name "server" -- run start
 
           # Save PM2 process list so it restarts on reboot
-          pm2 save
-          pm2 startup
+          docker exec -it server-container pm2 save
+          docker exec -it server-container pm2 startup
           EOF
