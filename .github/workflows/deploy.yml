@@ -28,7 +28,7 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -i "streamingAwsKey.pem" -o StrictHostKeyChecking=no ubuntu@${{ secrets.AWS_EC2_HOST }} << 'EOF'
-          cd /home/ubuntu/app
+          cd /home/ubuntu/app/server
 
           # Ensure docker-compose.yml exists
           if [ ! -f "docker-compose.yml" ]; then
