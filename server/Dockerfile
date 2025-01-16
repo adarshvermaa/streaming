@@ -40,4 +40,4 @@ EXPOSE 4000
 # Run the application
 # CMD ["npm", "run", "dev"]
 # Start the application using PM2
-CMD ["pm2-runtime", "start", "npm", "--", "start", "-T"]
+CMD ["pm2-runtime", "start", "npm", "--", "start"]
