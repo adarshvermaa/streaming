@@ -35,7 +35,9 @@ RUN npm install
 COPY . .
 
 # Expose the port the app will run on
-EXPOSE 3000
+EXPOSE 4000
 
 # Run the application
-CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "dev"]
+# Start the application using PM2
+CMD ["pm2-runtime", "start", "npm", "--", "start"]

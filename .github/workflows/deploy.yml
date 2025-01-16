@@ -1,0 +1,54 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Save SSH Key
+        run: echo "${{ secrets.AWS_PRIVATE_KEY }}" > streamingAwsKey.pem && chmod 600 streamingAwsKey.pem
+
+      - name: Copy Project Files to EC2
+        run: |
+          scp -i "streamingAwsKey.pem" -o StrictHostKeyChecking=no -r . ubuntu@${{ secrets.AWS_EC2_HOST }}:/home/ubuntu/app
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i "streamingAwsKey.pem" -o StrictHostKeyChecking=no ubuntu@${{ secrets.AWS_EC2_HOST }} << 'EOF'
+          cd /home/ubuntu/app
+
+          # Stop old PM2 process if exists
+          pm2 stop all || true
+
+          # Remove old containers
+          docker-compose down
+
+          # Build and start new containers
+          docker-compose up --build -d
+
+          # Ensure PM2 is installed
+          if ! command -v pm2 &> /dev/null
+          then
+              sudo npm install -g pm2
+          fi
+
+          # Start the Node.js app with PM2 inside the container
+          pm2 start npm --name "server" -- run start
+
+          # Save PM2 process list so it restarts on reboot
+          pm2 save
+          pm2 startup
+          EOF
