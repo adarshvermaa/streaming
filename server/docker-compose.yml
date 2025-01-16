@@ -10,5 +10,5 @@ services:
       - .:/app
     environment:
       - NODE_ENV=development
-    command: npm run dev
+    command: npm run start
     restart: always # Restart the server if it stops or crashes
