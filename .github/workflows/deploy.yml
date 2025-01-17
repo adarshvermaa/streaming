@@ -16,14 +16,17 @@ jobs:
       - name: Set up Docker
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Save SSH Key
-        run: echo "${{ secrets.AWS_PRIVATE_KEY }}" > streamingAwsKey.pem && chmod 600 streamingAwsKey.pem
+        run: |
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > streamingAwsKey.pem
+          chmod 600 streamingAwsKey.pem
 
       - name: Copy Project Files to EC2
         run: |
-          scp -i "streamingAwsKey.pem" -o StrictHostKeyChecking=no -r . ubuntu@${{ secrets.AWS_EC2_HOST }}:/home/ubuntu/app
+          rsync -avz --exclude=".git" --exclude="node_modules" --exclude="dist" ./ ubuntu@${{ secrets.AWS_EC2_HOST }}:/home/ubuntu/app
 
       - name: Deploy to EC2
         run: |
@@ -52,7 +55,8 @@ jobs:
 
           # Install Docker Compose if missing
           if ! command -v docker-compose &> /dev/null; then
-            sudo apt-get install -y docker-compose
+            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
           fi
 
           # Stop old PM2 process if exists
@@ -65,9 +69,7 @@ jobs:
           docker-compose up --build -d
 
           # Start the Node.js app with PM2 inside the container
-          docker exec -it server-container pm2 start npm --name "server" -- run start
-
-          # Save PM2 process list so it restarts on reboot
-          docker exec -it server-container pm2 save
-          docker exec -it server-container pm2 startup
+          docker exec server-container pm2 start npm --name "server" -- run start
+          docker exec server-container pm2 save
+          docker exec server-container pm2 startup
           EOF
