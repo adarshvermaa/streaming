@@ -7,6 +7,7 @@
     "start": "CI=true pm2-runtime start npm -- start",
     "build": "tsc",
     "dev": "docker-compose up -d && nodemon",
+    "start:server": "rm -rf dist && tsc && node dist/server.js",
     "db:migrations": "npx drizzle-kit generate  --config src/drizzle/drizzle.config.ts",
     "db:migrate": "npx drizzle-kit push  --config  src/drizzle/drizzle.config.ts"
   },
