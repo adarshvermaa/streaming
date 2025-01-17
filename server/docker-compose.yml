@@ -10,5 +10,5 @@ services:
       - .:/app
     environment:
       - NODE_ENV=development
-    command: npm run start
+    command: [ "pm2-runtime", "start", "npm", "--", "start" ]
     restart: always # Restart the server if it stops or crashes

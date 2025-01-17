@@ -4,7 +4,7 @@
   "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "CI=true pm2-runtime start npm -- start",
+    "start": "pm2-runtime start npm --name server -- run start:server",
     "build": "tsc",
     "dev": "docker-compose up -d && nodemon",
     "start:server": "rm -rf dist && tsc && node dist/server.js",
