@@ -25,6 +25,8 @@ RUN npm install -g typescript
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package*.json ./
+RUN npm install -g pm2 && npm install
+
 
 RUN npm install -g nodemon
 
