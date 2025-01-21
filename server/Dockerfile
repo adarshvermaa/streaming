@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
 # Install TypeScript globally
 RUN npm install -g typescript
 # Install PM2 globally
-RUN npm install -g pm2 pm2-runtime
+RUN npm install -g pm2 
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package*.json ./
