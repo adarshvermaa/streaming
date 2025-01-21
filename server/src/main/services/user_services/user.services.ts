@@ -74,7 +74,8 @@ export const getUserByEmailOrUsername = async (emailOrUsername: string) => {
 export const resetPassword = async (email: string, password: string) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const updatedUser = await db.update(UsersModel).set({ password, updatedAt: new Date() }).where(eq(UsersModel.email, email)).returning({
+            const data = { password, updatedAt: new Date() }
+            const updatedUser = await db.update(UsersModel).set(data).where(eq(UsersModel.email, email)).returning({
                 email: UsersModel.email,
                 username: UsersModel.username,
                 name: UsersModel.name,

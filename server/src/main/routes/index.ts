@@ -3,7 +3,6 @@ import fs from 'fs';
 import path from 'path';
 
 const routesPath = path.join(__dirname);
-
 export async function loadRoutes(app: express.Application): Promise<void> {
     try {
         const folders = await fs.promises.readdir(routesPath);
@@ -31,7 +30,7 @@ async function loadFilesFromFolder(folderPath: string, folderName: string, app: 
             if (stat.isDirectory()) {
                 // Recursively load files from subfolders
                 await loadFilesFromFolder(fullPath, `${folderName}/${fileOrFolder}`, app);
-            } else if (fileOrFolder.endsWith('.route.ts')) {
+            } else if (fileOrFolder.endsWith('.route.ts') || fileOrFolder.endsWith('.route.js')) {
                 const route = require(fullPath).default;
 
                 if (route && typeof route === 'function') {
@@ -48,7 +47,7 @@ async function loadFilesFromFolder(folderPath: string, folderName: string, app: 
     }
 }
 function generateRouteUrl(folder: string, file: string): string {
-    const fileNameWithoutExtension = file.replace('.route.ts', '').toLowerCase();
+    const fileNameWithoutExtension = file.replace(/\.route\.(ts|js)$/, '').toLowerCase();
     const folderParts = folder.split('/');
 
     if (folderParts.includes(fileNameWithoutExtension)) {

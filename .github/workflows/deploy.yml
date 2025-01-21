@@ -57,23 +57,7 @@ jobs:
             sudo npm install -g pm2
           fi
 
-          # Install Docker Compose if missing
-          if ! command -v docker-compose &> /dev/null; then
-            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-          fi
-
           # Stop old PM2 process if exists
-          pm2 stop all || true
+          sudo  pm2 stop all || true
 
-          # Stop and remove old containers
-          docker-compose down
-
-          # Build and start new containers
-          docker-compose up --build -d
-
-          # Start the Node.js app with PM2 inside the container
-          docker exec server-container pm2 start npm --name "server" -- run start
-          docker exec server-container pm2 save
-          docker exec server-container pm2 startup
-          EOF
+          sudo npm run start:server
