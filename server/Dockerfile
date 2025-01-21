@@ -27,6 +27,7 @@ RUN npm install -g pm2
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package*.json ./
+
 COPY docker-compose*.yml ./
 
 # Install project dependencies
