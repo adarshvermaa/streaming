@@ -27,9 +27,7 @@ RUN npm install -g pm2 pm2-runtime
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package*.json ./
-
-
-RUN npm install -g nodemon
+COPY docker-compose*.yml ./
 
 # Install project dependencies
 RUN npm install
