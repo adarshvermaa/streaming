@@ -12,8 +12,10 @@ COPY docker-compose*.yml ./
 # Copy the rest of your application code
 COPY . .
 
+RUN npm install
+
 # Expose the port your app will run on
 EXPOSE 4000
 
-# Start the application
+# Start the applicationnnn
 CMD ["npm", "run", "start:server"]
