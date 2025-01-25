@@ -58,7 +58,7 @@ app.use('/api/v1/users', authRoutes);
 
 
 // Root Route
-app.get('/app', (req, res) => {
+app.get('/api/server', (req, res) => {
   res.send('Hello World');
 });
 
