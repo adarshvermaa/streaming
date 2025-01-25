@@ -13,5 +13,6 @@ router.post('/forget-password', zodValidator(userForgetPasswordSchema), register
 router.post('/reset-password', zodValidator(userResetPasswordSchema), registerController.resetPassword);
 router.post('/login', zodValidator(userLoginSchema), registerController.loginUser);
 router.put('/user-update', authrization, zodValidator(userUpdateSchema), registerController.updateUser);
+router.get('/logout', registerController.logout);
 
 export default router;

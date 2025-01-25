@@ -10,7 +10,7 @@ import {
 
 export const userStatus = pgEnum("user_status", ["active", "inactive"]);
 export const userType = pgEnum("user_type", ["student", "teacher", "admin", 'superadmin']);
-
+export const authProvider = pgEnum("auth_provider", ["google", "facebook", "github", "twitter", "local"]);
 
 export const UsersModel = pgTable("users", {
     id: uuid("id").primaryKey().default(sql`gen_random_uuid()`).unique().notNull(),
@@ -30,4 +30,5 @@ export const UsersModel = pgTable("users", {
     isEmailVerifiedAt: timestamp("is_email_verified_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow(),
+    authProvider: varchar("auth_provider", { length: 50 }).notNull().default("local"),
 });

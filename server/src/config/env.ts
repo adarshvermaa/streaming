@@ -20,6 +20,12 @@ interface EnvConfig {
   SMTP_USER: string;
   JWT_SECRET_KEY: string;
   FRONTEND_URL: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  SESSION_SECRET: string;
+  FRONTEND_URL_LIVE: string;
+  GOOGLE_CALLBACK_URL: string;
+  FRONTEND_URL_LIVE_FAILURE: string;
 }
 
 export const ENV: EnvConfig = {
@@ -40,4 +46,10 @@ export const ENV: EnvConfig = {
   SMTP_USER: process.env.SMTP_USER || '',
   JWT_SECRET_KEY: process.env.JWT_SECRET || '',
   FRONTEND_URL: process.env.FRONTEND_URL || '',
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID! || '',
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET! || '',
+  SESSION_SECRET: process.env.SESSION_SECRET || 'secret',
+  FRONTEND_URL_LIVE: process.env.FRONTEND_URL_LIVE || '',
+  GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || '',
+  FRONTEND_URL_LIVE_FAILURE: process.env.FRONTEND_URL_LIVE_FAILURE || '',
 };

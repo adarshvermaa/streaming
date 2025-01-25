@@ -1,11 +1,12 @@
 import { eq, or } from "drizzle-orm";
 import db from "../../../config/database/database";
 import { UsersModel } from "../../models/users_model/users.model";
-import { UserType } from "../../../type/users/users.type";
+import { GoogleProfile, UserType } from "../../type/users/users.type";
 import { ERROR } from "../../../constant/errorHandler/errorManagement";
 
-export const isValidUser = async ({ email, username }: { email: string, username: string }) => {
+export const isValidUser = async (params: { [key: string]: string }) => {
     try {
+        const { email, username } = params;
         // Check if the email exists
         if (email) {
             const existingUser = await db
@@ -101,4 +102,21 @@ export const updateDynamicUser = async (email: string, data: { [key: string]: an
         }
     })
 }
+export const generateUsername = (displayName: string) => {
+    return displayName.toLowerCase().replace(/\s+/g, '') + Math.floor(1000 + Math.random() * 9000);
+}
 
+export const loginWithGoogle = async (user: GoogleProfile) => {
+    const username = generateUsername(user.profile.displayName);
+    const data = {
+        email: user.profile._json.email,
+        publicName: user.profile.displayName,
+        username: username,
+        name: user.profile.displayName,
+        avatarUrl: user.profile._json.picture,
+        password: 'google',
+        authProvider: 'google',
+        isEmailVerifiedAt: new Date(),
+    }
+    await db.insert(UsersModel).values(data);
+};

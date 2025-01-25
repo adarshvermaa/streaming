@@ -3,10 +3,12 @@ import bcrypt from "bcrypt";
 import { ERROR } from "../../../constant/errorHandler/errorManagement";
 import { SUCCESS } from "../../../constant/successHandler/successManagement";
 import { createNewUser, getUserByEmailOrUsername, isValidUser, resetPassword, updateDynamicUser } from "../../services/user_services/user.services";
-import { UserType } from "../../../type/users/users.type";
+import { UserType } from "../../type/users/users.type";
 import { decodeToken, generateToken } from "../../../utils/jwt/jwt.utils";
 import { sendEmail } from "../../../utils/mail/nodeMailer";
 import { ENV } from "../../../config/env";
+
+
 
 class RegisterController {
     public async register(req: Request, res: Response): Promise<void> {
@@ -203,6 +205,12 @@ class RegisterController {
                 message: ERROR.SERVER_ERROR, status: false, code: 500, error: error
             });
         }
+    }
+    public async logout(req: Request & { logout: (callback: (err: any) => void) => void }, res, next): Promise<void> {
+        req.logout((err) => {
+            if (err) return next(err);
+            res.redirect('/');
+        });
     }
 }
 

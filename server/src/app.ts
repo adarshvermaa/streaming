@@ -6,6 +6,9 @@ import { Server } from 'socket.io';
 import { loadRoutes } from './main/routes';
 import cors from 'cors';
 import db from './config/database/database';
+import session from 'express-session';
+import { ENV } from './config/env';
+import authRoutes, { googleAuthMiddleware } from './middileware/googleAuth.middlewear';
 
 // Initialize database connection
 db
@@ -21,6 +24,14 @@ app.use(cors(
     credentials: true
   }
 ));
+app.use(
+  session({
+    secret: ENV.SESSION_SECRET!, // Store in .env
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set secure: true if using HTTPS
+  })
+);
 
 // Create HTTP server
 const httpServer = http.createServer(app);
@@ -39,6 +50,12 @@ loadRoutes(app);
 
 // Initialize Socket.IO
 setupSocket(io);
+
+//passportMiddlewear
+googleAuthMiddleware(app);
+// Use Auth Routes
+app.use('/api/v1/users', authRoutes);
+
 
 // Root Route
 app.get('/app', (req, res) => {
