@@ -57,9 +57,7 @@ jobs:
             sudo npm install -g pm2
           fi
           
-          if [ ! -d "node_modules" ]; then
             npm install
-          fi
 
           if ! tsc -v &> /dev/null; then
             sudo npm install -g typescript
