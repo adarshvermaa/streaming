@@ -87,37 +87,49 @@ jobs:
 
           sudo npm run start:server
 
-
+      - name: Install and Configure Nginx with SSL
+        run: |
           cd /home/ubuntu/app/web_server/nginx
 
           # Ensure npm is available
           export PATH=$PATH:/usr/local/bin
 
-          # Install Nginx if not already installed
+          # Install Nginx if not installed
           if ! nginx -v &> /dev/null; then
             sudo apt-get update
             sudo apt-get install -y nginx
             sudo systemctl start nginx
             sudo systemctl enable nginx
           fi
-          # Check if default file exists and replace it
+
+          # Replace Nginx default config if exists
           if [ -f /etc/nginx/sites-available/default ]; then
             sudo rm /etc/nginx/sites-available/default
           fi
           sudo cp /home/ubuntu/app/web_server/nginx/default /etc/nginx/sites-available/default
 
-          # Ensure the file is symlinked in sites-enabled
+          # Ensure symlink in sites-enabled
           sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-          # Set permissions for frontend files
-           sudo chown -R www-data:www-data /home/ubuntu/app/client/dist
-           sudo chmod -R 755 /home/ubuntu/app/client/dist
+          # Set proper permissions for frontend files
+          sudo chown -R www-data:www-data /home/ubuntu/app/client/dist
+          sudo chmod -R 755 /home/ubuntu/app/client/dist
 
-          # Ensure necessary folders have execute permissions
+          # Ensure necessary directories have execute permissions
           for dir in /home/ubuntu /home/ubuntu/app /home/ubuntu/app/client /home/ubuntu/app/client/dist; do
-             sudo chmod +x "$dir"
-             done
+            sudo chmod +x "$dir"
+          done
 
-          # Test and restart Nginx
+          # Install Certbot if not installed
+          if ! certbot --version &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y certbot python3-certbot-nginx
+          fi
+
+          # Generate SSL Certificate
+          sudo certbot certonly --nginx --non-interactive --agree-tos -m adarshverma.nilbspr@gmail.com -d app.adarshverma.online
+
+          # Restart Nginx with new SSL settings
           sudo nginx -t && sudo systemctl restart nginx
+
           EOF
