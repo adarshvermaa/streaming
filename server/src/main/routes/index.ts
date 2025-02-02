@@ -55,4 +55,3 @@ function generateRouteUrl(folder: string, file: string): string {
     }
     return `/api/${folderParts.reverse().join('/')}/${fileNameWithoutExtension}`;
 }
-

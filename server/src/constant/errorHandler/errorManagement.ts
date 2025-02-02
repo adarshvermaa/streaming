@@ -13,4 +13,9 @@ export const ERROR = {
     TOKEN_REQUIRED: "Token is required",
     TOKEN_EXPIRED: "Token is expired",
     INVALID_PASSWORD: "Invalid password",
+    CREATE_WORKSPACE: 'Error in creating workspace',
+    GET_WORKSPACE: 'Error in fetching workspace',
+    UPDATE_WORKSPACE: 'Error in updating workspace',
+    GET_ALL_WORKSPACE: 'Error in fetching all workspace',
+    DELETE_WORKSPACE: 'Error in deleting workspace',
 }

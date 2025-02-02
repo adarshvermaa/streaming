@@ -5,4 +5,9 @@ export const SUCCESS = {
     PASSWORD_RESET: 'Password reset successfully',
     USER_LOGGED_IN: 'User logged in successfully',
     USER_UPDATED: 'User updated successfully',
+    CREATE_WORKSPACE: 'Workspace created successfully',
+    UPDATE_WORKSPACE: 'Workspace updated successfully',
+    GET_WORKSPACE: 'Workspace fetched successfully',
+    GET_ALL_WORKSPACE: 'All workspace fetched successfully',
+    DELETE_WORKSPACE: 'Workspace deleted successfully',
 }
