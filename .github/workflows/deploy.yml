@@ -87,18 +87,18 @@ jobs:
 
           sudo npm run start:server
 
-          cd /home/ubuntu/app/web_server/nginx
+          # cd /home/ubuntu/app/web_server/nginx
 
-          # Ensure npm is available
-          export PATH=$PATH:/usr/local/bin
+          # # Ensure npm is available
+          # export PATH=$PATH:/usr/local/bin
 
-          # Install Nginx if not installed
-          if ! nginx -v &> /dev/null; then
-            sudo apt-get update
-            sudo apt-get install -y nginx
-            sudo systemctl start nginx
-            sudo systemctl enable nginx
-          fi
+          # # Install Nginx if not installed
+          # if ! nginx -v &> /dev/null; then
+          #   sudo apt-get update
+          #   sudo apt-get install -y nginx
+          #   sudo systemctl start nginx
+          #   sudo systemctl enable nginx
+          # fi
 
           # Replace Nginx default config if exists
           if [ -f /etc/nginx/sites-available/default ]; then
@@ -118,21 +118,21 @@ jobs:
             sudo chmod +x "$dir"
           done
 
-          # Install Certbot if not installed
-          if ! certbot --version &> /dev/null; then
-            sudo apt-get update
-            sudo apt-get install -y certbot python3-certbot-nginx
-          fi
+          # # Install Certbot if not installed
+          # if ! certbot --version &> /dev/null; then
+          #   sudo apt-get update
+          #   sudo apt-get install -y certbot python3-certbot-nginx
+          # fi
 
-          # Check if SSL is already set up (certificate exists)
-          if [ ! -f /etc/letsencrypt/live/app.adarshverma.online/fullchain.pem ]; then
-            echo "SSL certificate not found. Running Certbot..."
-             sudo certbot certonly --nginx --non-interactive --agree-tos -m adarshverma.nilbspr@gmail.com -d app.adarshverma.online
-           else
-            echo "SSL certificate already exists. Skipping Certbot setup."
-          fi
+          # # Check if SSL is already set up (certificate exists)
+          # if [ ! -f /etc/letsencrypt/live/app.adarshverma.online/fullchain.pem ]; then
+          #   echo "SSL certificate not found. Running Certbot..."
+          #    sudo certbot certonly --nginx --non-interactive --agree-tos -m adarshverma.nilbspr@gmail.com -d app.adarshverma.online
+          #  else
+          #   echo "SSL certificate already exists. Skipping Certbot setup."
+          # fi
 
-          # Restart Nginx with new SSL settings
-          sudo nginx -t && sudo systemctl restart nginx
+          # # Restart Nginx with new SSL settings
+          # sudo nginx -t && sudo systemctl restart nginx
 
           EOF
