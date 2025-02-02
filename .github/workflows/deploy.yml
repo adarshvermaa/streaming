@@ -87,8 +87,6 @@ jobs:
 
           sudo npm run start:server
 
-      - name: Install and Configure Nginx with SSL
-        run: |
           cd /home/ubuntu/app/web_server/nginx
 
           # Ensure npm is available
@@ -126,8 +124,13 @@ jobs:
             sudo apt-get install -y certbot python3-certbot-nginx
           fi
 
-          # Generate SSL Certificate
-          sudo certbot certonly --nginx --non-interactive --agree-tos -m adarshverma.nilbspr@gmail.com -d app.adarshverma.online
+          # Check if SSL is already set up (certificate exists)
+          if [ ! -f /etc/letsencrypt/live/app.adarshverma.online/fullchain.pem ]; then
+            echo "SSL certificate not found. Running Certbot..."
+             sudo certbot certonly --nginx --non-interactive --agree-tos -m adarshverma.nilbspr@gmail.com -d app.adarshverma.online
+           else
+            echo "SSL certificate already exists. Skipping Certbot setup."
+          fi
 
           # Restart Nginx with new SSL settings
           sudo nginx -t && sudo systemctl restart nginx
