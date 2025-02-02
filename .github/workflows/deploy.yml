@@ -87,18 +87,18 @@ jobs:
 
           sudo npm run start:server
 
-          # cd /home/ubuntu/app/web_server/nginx
+          cd /home/ubuntu/app/web_server/nginx
 
-          # # Ensure npm is available
-          # export PATH=$PATH:/usr/local/bin
+          # Ensure npm is available
+          export PATH=$PATH:/usr/local/bin
 
-          # # Install Nginx if not installed
-          # if ! nginx -v &> /dev/null; then
-          #   sudo apt-get update
-          #   sudo apt-get install -y nginx
-          #   sudo systemctl start nginx
-          #   sudo systemctl enable nginx
-          # fi
+          # Install Nginx if not installed
+          if ! nginx -v &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y nginx
+            sudo systemctl start nginx
+            sudo systemctl enable nginx
+          fi
 
           # Replace Nginx default config if exists
           if [ -f /etc/nginx/sites-available/default ]; then
@@ -133,6 +133,6 @@ jobs:
           # fi
 
           # # Restart Nginx with new SSL settings
-          # sudo nginx -t && sudo systemctl restart nginx
+          sudo nginx -t && sudo systemctl restart nginx
 
           EOF
