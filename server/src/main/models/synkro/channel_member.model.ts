@@ -3,20 +3,32 @@ import {
     uuid,
     timestamp,
     primaryKey,
-} from 'drizzle-orm/pg-core';
-import { ChannelsModel } from './channel.model';
-import { UsersModel } from '../users_model/users.model';
-
-
-// Channel Members Table (Many-to-Many relationship between users and channels)
-export const channelMembers = pgTable(
+    index
+  } from 'drizzle-orm/pg-core';
+  import { ChannelsModel } from './channel.model';
+  import { UsersModel } from '../users_model/users.model';
+  
+  export const channelMembers = pgTable(
     'channel_members',
     {
-        channelId: uuid('channel_id').references(() => ChannelsModel.id, { onDelete: 'cascade' }).notNull(),
-        userId: uuid('user_id').references(() => UsersModel.id, { onDelete: 'cascade' }).notNull(),
-        joinedAt: timestamp('joined_at').defaultNow().notNull(),
+      channelId: uuid('channel_id')
+        .references(() => ChannelsModel.id, { onDelete: 'cascade' })
+        .notNull(),
+      userId: uuid('user_id')
+        .references(() => UsersModel.id, { onDelete: 'cascade' })
+        .notNull(),
+      joinedAt: timestamp('joined_at')
+        .defaultNow()
+        .notNull(),
     },
     (table) => ({
-        pk: primaryKey({ columns: [table.channelId, table.userId] }),
+      // Explicitly named composite primary key
+      compositePk: primaryKey({
+        name: 'channel_members_pkey',
+        columns: [table.channelId, table.userId]
+      }),
+      // Indexes for common query patterns
+      channelIdx: index('channel_idx').on(table.channelId),
+      userIdx: index('user_idx').on(table.userId)
     })
-);
+  );

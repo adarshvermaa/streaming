@@ -1,2 +1,0 @@
-CREATE TYPE "public"."auth_provider" AS ENUM('google', 'facebook', 'github', 'twitter', 'local');--> statement-breakpoint
-ALTER TABLE "users" ADD COLUMN "auth_provider" varchar(50) DEFAULT 'local' NOT NULL;

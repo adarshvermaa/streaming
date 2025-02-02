@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1736181923194,
-      "tag": "0000_sturdy_gambit",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1736184897932,
-      "tag": "0001_oval_vargas",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1736191558659,
-      "tag": "0002_overrated_kulan_gath",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1736529643516,
-      "tag": "0003_empty_stature",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1736868029956,
-      "tag": "0004_remarkable_stranger",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1737836456422,
-      "tag": "0005_hot_hitman",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1737900243422,
-      "tag": "0006_common_multiple_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1738003257611,
-      "tag": "0007_spicy_nightmare",
+      "when": 1738514231979,
+      "tag": "0000_simple_black_panther",
       "breakpoints": true
     }
   ]

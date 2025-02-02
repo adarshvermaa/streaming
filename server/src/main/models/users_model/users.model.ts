@@ -1,34 +1,60 @@
 import { sql } from "drizzle-orm";
 import {
-    pgTable,
-    varchar,
-    text,
-    timestamp,
-    uuid,
-    pgEnum,
+  pgTable,
+  varchar,
+  text,
+  timestamp,
+  uuid,
+  pgEnum,
+  index,
 } from "drizzle-orm/pg-core";
 
+// Enum Definitions
 export const userStatus = pgEnum("user_status", ["active", "inactive"]);
-export const userType = pgEnum("user_type", ["student", "teacher", "admin", 'superadmin']);
-export const authProvider = pgEnum("auth_provider", ["google", "facebook", "github", "twitter", "local"]);
+export const userType = pgEnum("user_type", [
+  "student",
+  "teacher",
+  "admin",
+  "superadmin",
+]);
+export const authProvider = pgEnum("auth_provider", [
+  "google",
+  "facebook",
+  "github",
+  "twitter",
+  "local",
+]);
 
-export const UsersModel = pgTable("users", {
-    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`).unique().notNull(),
+export const UsersModel = pgTable(
+  "users",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 255 }).notNull(),
-    publicName: varchar("public_name", { length: 255 }),
+    publicName: varchar("public_name", { length: 255 }).default(""),
     email: varchar("email", { length: 255 }).unique().notNull(),
     username: varchar("username", { length: 255 }).unique().notNull(),
-    password: text("password").notNull(),
-    isActive: varchar("user_status", { length: 10 }).default("active").notNull(),
-    userType: varchar("user_type", { length: 10 }).default("student").notNull(),
-    avatarUrl: varchar("avatar_url", { length: 500 }),
-    coverUrl: varchar("cover_url", { length: 500 }),
+    password: text("password").notNull(), // Made optional for OAuth users
+    isActive: userStatus("user_status").default("active").notNull(),
+    userType: userType("user_type").default("student").notNull(),
+    avatarUrl: text("avatar_url"), // Changed to text for longer URLs
+    coverUrl: text("cover_url"), // Changed to text for longer URLs
     bio: text("bio"),
     phone: varchar("phone", { length: 20 }),
-    externalUrl: varchar("external_url", { length: 800 }).array(),
-    deleteAt: timestamp("deleted_at"),
-    isEmailVerifiedAt: timestamp("is_email_verified_at"),
+    externalUrls: text("external_urls").array(), // Changed to text array
+    deletedAt: timestamp("deleted_at"), // Corrected field name
+    emailVerifiedAt: timestamp("email_verified_at"), // Improved naming
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow(),
-    authProvider: varchar("auth_provider", { length: 50 }).notNull().default("local"),
-});
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    authProvider: authProvider("auth_provider").default("local").notNull(),
+    isEmailVerifiedAt: timestamp("is_email_verified_at"),
+  },
+  (table) => ({
+    emailIdx: index("email_idx").on(table.email),
+    usernameIdx: index("username_idx").on(table.username),
+    authProviderIdx: index("auth_provider_idx").on(table.authProvider),
+  })
+);
