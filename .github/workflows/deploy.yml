@@ -74,3 +74,38 @@ jobs:
           sudo  pm2 stop all || true
 
           sudo npm run start:server
+
+
+          cd /home/ubuntu/app/web_server/nginx
+
+          # Ensure npm is available
+          export PATH=$PATH:/usr/local/bin
+
+          # Install Nginx if not already installed
+          if ! nginx -v &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y nginx
+            sudo systemctl start nginx
+            sudo systemctl enable nginx
+          fi
+          # Check if default file exists and replace it
+          if [ -f /etc/nginx/sites-available/default ]; then
+            sudo rm /etc/nginx/sites-available/default
+          fi
+          sudo cp /home/ubuntu/app/web_server/nginx/default /etc/nginx/sites-available/default
+
+          # Ensure the file is symlinked in sites-enabled
+          sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+          # Set permissions for frontend files
+           sudo chown -R www-data:www-data /home/ubuntu/app/client/dist
+           sudo chmod -R 755 /home/ubuntu/app/client/dist
+
+          # Ensure necessary folders have execute permissions
+          for dir in /home/ubuntu /home/ubuntu/app /home/ubuntu/app/client /home/ubuntu/app/client/dist; do
+             sudo chmod +x "$dir"
+             done
+
+          # Test and restart Nginx
+          sudo nginx -t && sudo systemctl restart nginx
+          EOF
