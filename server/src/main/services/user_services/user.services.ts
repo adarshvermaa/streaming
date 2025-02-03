@@ -138,3 +138,18 @@ export const loginWithGoogle = async (user: GoogleProfile) => {
   };
   await db.insert(UsersModel).values(data);
 };
+
+export const getAllUserServies = async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const users = await db
+        .select()
+        .from(UsersModel)
+        .then((result) => result);
+      resolve(users);
+    } catch (error) {
+      console.error("Error in getAllUserServies:", error);
+      reject(error);
+    }
+  });
+};

@@ -4,15 +4,41 @@ import {
   IWorkspace,
   UWorkspace,
 } from "../../type/users/synkro/workspaces.type";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
+import { UserType } from "../../type/users/users.type";
+
+export const generateSlug = (text) => {
+  return text
+    .toString() // Ensure the input is a string
+    .toLowerCase() // Convert to lower case
+    .trim() // Remove whitespace from both ends
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w\-]+/g, "") // Remove all non-word chars (letters, numbers, underscores, and hyphens)
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from the start
+    .replace(/-+$/, ""); // Trim - from the end
+};
 
 export const createWorkspaceServices = async (
-  workspace: IWorkspace
+  { name, description, logoUrl, bannerUrl, websiteUrl }: IWorkspace,
+  user: UserType
 ): Promise<IWorkspace> => {
   return new Promise(async (resolve, reject) => {
     try {
-      // const [newWorkspace] = await db.insert(WorkspacesModel).values(workspace).returning();
-      // resolve(newWorkspace);
+      const data = {
+        name,
+        description,
+        createdBy: user.id,
+        slug: generateSlug(name),
+        logoUrl,
+        bannerUrl,
+        websiteUrl,
+      };
+      const [newWorkspace] = await db
+        .insert(WorkspacesModel)
+        .values(data)
+        .returning();
+      resolve(newWorkspace);
     } catch (error) {
       console.error("Error in createWorkspace:", error);
       reject(error);
@@ -21,13 +47,29 @@ export const createWorkspaceServices = async (
 };
 
 export const updateWorkspaceServices = async (
-  workspace: UWorkspace
+  workspace: UWorkspace,
+  user: UserType
 ): Promise<UWorkspace> => {
   return new Promise(async (resolve, reject) => {
     try {
+      const { name, description, logoUrl, bannerUrl, websiteUrl } = workspace;
+      const data = {
+        name,
+        description,
+        slug: generateSlug(name),
+        logoUrl,
+        bannerUrl,
+        websiteUrl,
+      };
       const [newWorkspace] = await db
         .update(WorkspacesModel)
-        .set(workspace)
+        .set(data)
+        .where(
+          and(
+            eq(WorkspacesModel.createdBy, user.id),
+            isNull(WorkspacesModel.deletedAt)
+          )
+        )
         .returning();
       resolve(newWorkspace);
     } catch (error) {
@@ -45,7 +87,12 @@ export const getWorkspaceServices = async (
       const [getWorkspace] = await db
         .select()
         .from(WorkspacesModel)
-        .where(eq(WorkspacesModel.id, workspace_id));
+        .where(
+          and(
+            eq(WorkspacesModel.id, workspace_id),
+            isNull(WorkspacesModel.deletedAt)
+          )
+        );
       resolve(getWorkspace);
     } catch (error) {
       console.error("Error in getWorkspace:", error);
@@ -62,7 +109,12 @@ export const getAllWorkspaceServices = async (
       const getWorkspace = await db
         .select()
         .from(WorkspacesModel)
-        .where(eq(WorkspacesModel.createdBy, user_id));
+        .where(
+          and(
+            eq(WorkspacesModel.createdBy, user_id),
+            isNull(WorkspacesModel.deletedAt)
+          )
+        );
       resolve(getWorkspace);
     } catch (error) {
       console.error("Error in getAllWorkspace:", error);
@@ -70,22 +122,20 @@ export const getAllWorkspaceServices = async (
     }
   });
 };
-export const deleteWorkspaceServices = async (
-  workspace_id: string
-): Promise<IWorkspace[]> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      //   const deleteWorkspace = await db
-      //     .update(WorkspacesModel)
-      //     .set({
-      //       deletedAt: new Date(),
-      //     })
-      //     .where(eq(WorkspacesModel.id, workspace_id))
-      //     .returning();
-      //   resolve(deleteWorkspace);
-    } catch (error) {
-      console.error("Error in deleteWorkspace:", error);
-      reject(error);
-    }
-  });
+export const deleteWorkspaceServices = async (workspace_id: string) => {
+  const data = {
+    deletedAt: new Date(),
+  };
+
+  try {
+    const deleteWorkspace = await db
+      .update(WorkspacesModel)
+      .set(data as any) // Cast to any to satisfy TypeScript
+      .where(eq(WorkspacesModel.id, workspace_id))
+      .returning();
+    return deleteWorkspace;
+  } catch (error) {
+    console.error("Error in deleteWorkspace:", error);
+    throw error;
+  }
 };

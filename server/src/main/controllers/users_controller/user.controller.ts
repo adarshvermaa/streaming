@@ -4,6 +4,7 @@ import { ERROR } from "../../../constant/errorHandler/errorManagement";
 import { SUCCESS } from "../../../constant/successHandler/successManagement";
 import {
   createNewUser,
+  getAllUserServies,
   getUserByEmailOrUsername,
   isValidUser,
   resetPassword,
@@ -211,7 +212,7 @@ class RegisterController {
         user.password as string
       );
       if (isPasswordValid) {
-        const token = generateToken({ user, expiresIn: "1y" });
+        const token = generateToken({ user, expiresIn: "30d" });
         res.status(200).send({
           message: SUCCESS.USER_LOGGED_IN,
           status: true,
@@ -341,6 +342,24 @@ class RegisterController {
       if (err) return next(err);
       res.redirect("/");
     });
+  }
+  public async geAllUsers(req: Request, res: Response): Promise<void> {
+    try {
+      const users = await getAllUserServies();
+      res.status(200).send({
+        message: SUCCESS.GET_ALL_USER,
+        status: true,
+        code: 200,
+        data: users,
+      });
+    } catch (error) {
+      res.status(500).send({
+        message: ERROR.SERVER_ERROR,
+        status: false,
+        code: 500,
+        error: error,
+      });
+    }
   }
 }
 

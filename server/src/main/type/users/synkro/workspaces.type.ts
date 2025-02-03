@@ -1,11 +1,18 @@
 export interface IWorkspace {
-    name: string;
-    description: string;
-    createdBy?: string;
+  name: string;
+  description: string;
+  slug: string;
+  createdBy: string;
+  logoUrl?: string;
+  bannerUrl?: string;
+  websiteUrl?: string;
 }
 export interface UWorkspace {
-    name: string;
-    description: string;
-    createdBy?: string;
-    updatedAt?: Date;
+  name: string;
+  description: string;
+  slug: string;
+  createdBy: string;
+  logoUrl?: string;
+  bannerUrl?: string;
+  websiteUrl?: string;
 }

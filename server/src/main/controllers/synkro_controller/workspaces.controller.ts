@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   createWorkspaceServices,
   deleteWorkspaceServices,
@@ -8,31 +8,30 @@ import {
 } from "../../services/synkro/workspace.services";
 import { SUCCESS } from "../../../constant/successHandler/successManagement";
 import { ERROR } from "../../../constant/errorHandler/errorManagement";
+import { errorHandler } from "../../../middileware/errorHandler";
 
 class WorkspacesController {
-  public async createWorkspace(req: Request, res: Response): Promise<void> {
+  public async createWorkspace(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const {
-        body: { name, description },
-        user,
-      } = req;
-      const workspace = await createWorkspaceServices({
-        name,
-        description,
-        createdBy: user.id,
-      });
+      const { body, user } = req;
+      const workspace = await createWorkspaceServices(body, user);
       res.status(201).send({
         message: SUCCESS.CREATE_WORKSPACE,
         workspace,
       });
     } catch (error) {
-      res.status(500).send({
-        message: error.message,
-        ERROR: ERROR.CREATE_WORKSPACE,
-      });
+      errorHandler(error, req, res, next);
     }
   }
-  public async getWorkspace(req: Request, res: Response): Promise<void> {
+  public async getWorkspace(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const {
         params: { workspace_id },
@@ -43,13 +42,14 @@ class WorkspacesController {
         getWorkspace,
       });
     } catch (error) {
-      res.status(500).send({
-        message: error.message,
-        ERROR: ERROR.GET_WORKSPACE,
-      });
+      errorHandler(error, req, res, next);
     }
   }
-  public async getAllWorkspace(req: Request, res: Response): Promise<void> {
+  public async getAllWorkspace(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { user } = req;
       const getALlWorkspace = await getAllWorkspaceServices(user.id);
@@ -58,33 +58,30 @@ class WorkspacesController {
         getALlWorkspace,
       });
     } catch (error) {
-      res.status(500).send({
-        message: error.message,
-        ERROR: ERROR.GET_ALL_WORKSPACE,
-      });
+      errorHandler(error, req, res, next);
     }
   }
-  public async updateWorkspace(req: Request, res: Response): Promise<void> {
+  public async updateWorkspace(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const {
-        body: { name, description },
-      } = req;
-      const workspaceUpdate = await updateWorkspaceServices({
-        name,
-        description,
-      });
+      const { body, user } = req;
+      const workspaceUpdate = await updateWorkspaceServices(body, user);
       res.status(201).send({
         message: SUCCESS.UPDATE_WORKSPACE,
         workspaceUpdate,
       });
     } catch (error) {
-      res.status(500).send({
-        message: error.message,
-        ERROR: ERROR.UPDATE_WORKSPACE,
-      });
+      errorHandler(error, req, res, next);
     }
   }
-  public async deleteWorkspace(req: Request, res: Response): Promise<void> {
+  public async deleteWorkspace(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const {
         params: { workspace_id },
@@ -95,10 +92,7 @@ class WorkspacesController {
         deleteWorkspace,
       });
     } catch (error) {
-      res.status(500).send({
-        message: error.message,
-        ERROR: ERROR.DELETE_WORKSPACE,
-      });
+      errorHandler(error, req, res, next);
     }
   }
 }
