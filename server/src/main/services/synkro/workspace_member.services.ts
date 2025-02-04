@@ -1,8 +1,11 @@
 import { WorkspaceMembersModel } from "../../models/synkro/workspace_members.model";
 import db from "../../../config/database/database";
 import { randomUUID } from "crypto";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { ENV } from "../../../config/env";
+import { WorkspacesModel } from "../../models/synkro/workspaces.model";
+import { UsersModel } from "../../models/users_model/users.model";
+import { UserType } from "../../type/users/users.type";
 
 export const createWorkspaceInvitationService = async (
   workspaceId: string,
@@ -98,4 +101,73 @@ export const acceptInvitationService = async (token: string) => {
       .returning();
     return updatedMember;
   });
+};
+
+export const getAllWorkspaceMembersService = async (workspaceId: string) => {
+  const workspaceMembers = await db
+    .select()
+    .from(WorkspaceMembersModel)
+    .innerJoin(
+      WorkspacesModel,
+      and(
+        isNull(WorkspacesModel.deletedAt),
+        eq(WorkspacesModel.id, WorkspaceMembersModel.workspaceId)
+      )
+    )
+    .innerJoin(
+      UsersModel,
+      and(
+        isNull(UsersModel.deletedAt),
+        eq(UsersModel.id, WorkspaceMembersModel.userId)
+      )
+    )
+    .where(
+      and(
+        isNull(WorkspaceMembersModel.deletedAt),
+        eq(WorkspaceMembersModel.invitationStatus, "accepted"),
+        eq(WorkspaceMembersModel.workspaceId, workspaceId)
+      )
+    );
+  return workspaceMembers;
+};
+
+export const getWorkspaceMembersService = async (userId: string) => {
+  const workspaceMembers = await db
+    .select()
+    .from(WorkspaceMembersModel)
+    .innerJoin(
+      WorkspacesModel,
+      and(
+        isNull(WorkspacesModel.deletedAt),
+        eq(WorkspacesModel.id, WorkspaceMembersModel.workspaceId)
+      )
+    )
+    .innerJoin(
+      UsersModel,
+      and(
+        isNull(UsersModel.deletedAt),
+        eq(UsersModel.id, WorkspaceMembersModel.userId)
+      )
+    )
+    .where(
+      and(
+        isNull(WorkspaceMembersModel.deletedAt),
+        eq(WorkspaceMembersModel.invitationStatus, "accepted"),
+        eq(WorkspaceMembersModel.userId, userId)
+      )
+    );
+  return workspaceMembers;
+};
+
+export const deleteWorkspaceMemberService = async (
+  userId: string,
+  workspaceId: string
+) => {
+  const data = { deletedAt: new Date(), workspaceId: workspaceId };
+  const [deletedMember] = await db
+    .update(WorkspaceMembersModel)
+    .set(data)
+    .where(eq(WorkspaceMembersModel.userId, userId))
+    .returning();
+  return deletedMember;
 };

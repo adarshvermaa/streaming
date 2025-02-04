@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import {
   acceptInvitationService,
   createWorkspaceInvitationService,
+  deleteWorkspaceMemberService,
+  getAllWorkspaceMembersService,
+  getWorkspaceMembersService,
 } from "../../services/synkro/workspace_member.services";
 import { errorHandler } from "../../../middileware/errorHandler";
 
@@ -63,6 +66,83 @@ class WorkspaceMembersController {
         message: "Invitation accepted successfully",
         workspaceId: updatedMember.workspaceId,
         userId: updatedMember.userId,
+      });
+    } catch (error) {
+      errorHandler(error, req, res, next);
+    }
+  }
+  public async getAllWorkspaceMembers(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { workspaceId } = req;
+      const workspaceMembers = await getAllWorkspaceMembersService(workspaceId);
+      if (!workspaceMembers) {
+        res.status(404).send({
+          error: "No members found",
+        });
+        return;
+      }
+      res.status(200).send({
+        data: workspaceMembers,
+        massage: "Members found successfully",
+      });
+    } catch (error) {
+      errorHandler(error, req, res, next);
+    }
+  }
+
+  public async getWorkshopMember(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const {
+        params: { userId },
+      } = req;
+      const workspaceMembers = await getWorkspaceMembersService(userId);
+      if (!workspaceMembers) {
+        res.status(404).send({
+          error: "No members found",
+        });
+        return;
+      }
+
+      res.status(200).send({
+        data: workspaceMembers,
+        massage: "Member found successfully",
+      });
+    } catch (error) {
+      errorHandler(error, req, res, next);
+    }
+  }
+  public async deleteWorkshopMember(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const {
+        params: { userId },
+        workspaceId,
+      } = req;
+      const workspaceMembers = await deleteWorkspaceMemberService(
+        userId,
+        workspaceId
+      );
+      if (!workspaceMembers) {
+        res.status(404).send({
+          error: "No members found",
+        });
+        return;
+      }
+
+      res.status(200).send({
+        data: workspaceMembers,
+        massage: "Member found successfully",
       });
     } catch (error) {
       errorHandler(error, req, res, next);

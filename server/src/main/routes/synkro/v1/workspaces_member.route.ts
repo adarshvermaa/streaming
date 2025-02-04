@@ -19,4 +19,23 @@ WorkspacesMemberRouter.get(
   isBlongToWorkspace,
   WorkspaceMembersController.acceptInvitation
 );
+WorkspacesMemberRouter.get(
+  "/all",
+  authrization,
+  isBlongToWorkspace,
+  WorkspaceMembersController.getAllWorkspaceMembers
+);
+WorkspacesMemberRouter.get(
+  "/:userId",
+  authrization,
+  isBlongToWorkspace,
+  WorkspaceMembersController.getWorkshopMember
+);
+WorkspacesMemberRouter.get(
+  "/:userId",
+  authrization,
+  isBlongToWorkspace,
+  WorkspaceMembersController.deleteWorkshopMember
+);
+
 export default WorkspacesMemberRouter;

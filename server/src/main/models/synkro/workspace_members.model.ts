@@ -9,7 +9,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { UsersModel } from "../users_model/users.model";
 import { WorkspacesModel } from "./workspaces.model";
-import { sql } from "drizzle-orm";
 
 // Enum for member roles
 export const workspaceMemberRoleEnum = pgEnum("workspace_member_role", [
