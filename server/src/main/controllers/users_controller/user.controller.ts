@@ -248,6 +248,7 @@ class RegisterController {
           bio,
           phone,
           externalUrls,
+          userType,
         },
         user,
       } = req;
@@ -272,6 +273,11 @@ class RegisterController {
           phone,
           externalUrls,
         })) as UserType | null;
+      }
+      if (userType) {
+        updatedUser = (await updateDynamicUser(user.email, {
+          userType,
+        })) as UserType;
       }
       if (password) {
         const hashedPassword = await bcrypt.hash(password, 15);

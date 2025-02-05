@@ -4,8 +4,7 @@ import { randomUUID } from "crypto";
 import { and, eq, isNull } from "drizzle-orm";
 import { ENV } from "../../../config/env";
 import { WorkspacesModel } from "../../models/synkro/workspaces.model";
-import { UsersModel } from "../../models/users_model/users.model";
-import { UserType } from "../../type/users/users.type";
+import { UsersModel, userType } from "../../models/users_model/users.model";
 
 export const createWorkspaceInvitationService = async (
   workspaceId: string,
@@ -37,25 +36,28 @@ export const createWorkspaceInvitationService = async (
       };
     }
   }
+  const [checkUserType] = await db
+    .select({
+      userId: UsersModel.id,
+      userType: UsersModel.userType,
+    })
+    .from(UsersModel)
+    .where(and(eq(UsersModel.id, invitedUserId), isNull(UsersModel.deletedAt)));
 
   const invitationToken = randomUUID();
-  const invitationExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days expiration
+  const invitationExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const data = {
     workspaceId,
     userId: invitedUserId,
     invitedBy,
     invitationToken,
     invitationStatus: "pending",
+    role: checkUserType.userType === "student" ? "member" : "admin",
     invitedAt: new Date(),
     createdAt: new Date(),
     updatedAt: new Date(),
   };
-  //   const dataSet = {
-  //     invitationToken,
-  //     invitationStatus: "pending",
-  //     invitedAt: new Date(),
-  //     updatedAt: new Date(),
-  //   };
+
   const [invitation] = await db
     .insert(WorkspaceMembersModel)
     .values(data)
