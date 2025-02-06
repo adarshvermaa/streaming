@@ -15,14 +15,12 @@ const ChannelsRouter = Router();
 ChannelsRouter.post(
   "/",
   authrization,
-  authrization,
   isBlongToWorkspace,
   zodValidator(CreateChannelSchema),
   channelsController.createChannel
 );
 ChannelsRouter.put(
   "/:channelId",
-  authrization,
   authrization,
   isBlongToWorkspace,
   zodValidator(UpdateChannelSchema),
@@ -31,20 +29,17 @@ ChannelsRouter.put(
 ChannelsRouter.get(
   "/all",
   authrization,
-  authrization,
   isBlongToWorkspace,
   channelsController.getAllChannels
 );
 ChannelsRouter.get(
   "/:channelId",
   authrization,
-  authrization,
   isBlongToWorkspace,
   channelsController.getChannel
 );
 ChannelsRouter.delete(
   "/:channelId",
-  authrization,
   authrization,
   isBlongToWorkspace,
   channelsController.deleteChannel

@@ -1,0 +1,1 @@
+ALTER TABLE "channels" ADD COLUMN "delete_at" timestamp;

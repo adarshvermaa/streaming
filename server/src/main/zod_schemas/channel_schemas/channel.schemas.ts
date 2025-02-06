@@ -12,3 +12,8 @@ export const UpdateChannelSchema = z.object({
   description: z.string().optional(),
   isPrivate: z.boolean().optional(),
 });
+
+export const CreateChannelMemberSchema = z.object({
+  channelId: z.string().uuid("channel id must e required"),
+  // userId: z.string().uuid("channel id must e required"),
+});

@@ -9,6 +9,7 @@ declare module "express-serve-static-core" {
   interface Request {
     user?: any;
     workspaceId?: string;
+    channelId?: string;
   }
 }
 
@@ -58,6 +59,25 @@ export const isBlongToWorkspace = async (
       req.workspaceId = Array.isArray(workspaceId)
         ? workspaceId[0]
         : workspaceId;
+      next();
+    } else {
+      res
+        .status(401)
+        .send({ message: ERROR.UNAUTHORIZED, status: false, code: 401 });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+export const isBlongToChannels = async (
+  req: Request & { headers: IncomingHttpHeaders },
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const channelId = req.headers["channel-id"];
+    if (channelId) {
+      req.channelId = Array.isArray(channelId) ? channelId[0] : channelId;
       next();
     } else {
       res

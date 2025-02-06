@@ -112,6 +112,7 @@ export const channelServices = {
       )
       .where(
         and(
+          isNull(ChannelsModel.deleteAt),
           eq(ChannelsModel.id, channelId),
           sql`${ChannelsModel.isPrivate} = false OR ${WorkspaceMembersModel.userId} IS NOT NULL`
         )
@@ -143,6 +144,7 @@ export const channelServices = {
       .from(ChannelsModel)
       .where(
         and(
+          isNull(ChannelsModel.deleteAt),
           eq(ChannelsModel.workspaceId, workspaceId),
           isPrivate !== undefined
             ? eq(ChannelsModel.isPrivate, isPrivate)
@@ -163,7 +165,9 @@ export const channelServices = {
     return db.transaction(async (tx) => {
       // Verify ownership or admin status
       const [channel] = await tx
-        .select()
+        .select({
+          channelName: ChannelsModel.name,
+        })
         .from(ChannelsModel)
         .leftJoin(
           WorkspaceMembersModel,
@@ -182,8 +186,14 @@ export const channelServices = {
       if (!channel) {
         throw new Error("Channel not found or unauthorized");
       }
-
-      await tx.delete(ChannelsModel).where(eq(ChannelsModel.id, channelId));
+      const data = {
+        deleteAt: new Date(),
+        name: channel.channelName,
+      };
+      await tx
+        .update(ChannelsModel)
+        .set(data)
+        .where(eq(ChannelsModel.id, channelId));
 
       return { success: true };
     });
