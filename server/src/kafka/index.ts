@@ -54,6 +54,7 @@ export class KafkaConnections {
             `Received message on ${topic} [partition ${partition}]: ${message.value?.toString()}`
           );
           // You can also perform additional actions here (e.g., updating a database)
+          // You can also perform additional actions here (e.g., updating a database)
         })
       );
 
