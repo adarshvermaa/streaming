@@ -10,4 +10,43 @@ services:
       - .:/app
     environment:
       - NODE_ENV=development
-    restart: always # Restart the server if it stops or crashes
+      - KAFKA_BROKER=${KAFKA_BROKER}   # should be set to "kafka:9092"
+      - KAFKA_CLIENT_ID=${KAFKA_CLIENT_ID}
+    networks:
+      - mynet
+    restart: always
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - mynet
+    restart: always
+
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      # Kafka binds to all interfaces on port 9092 inside the container.
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
+      # Advertised listeners: here we use the host IP from the env file so external clients can connect.
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${HOST_IP}:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    networks:
+      mynet:
+        aliases:
+          - kafka
+    restart: always
+
+networks:
+  mynet:

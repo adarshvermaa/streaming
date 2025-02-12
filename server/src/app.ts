@@ -1,6 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { setupSocket } from "./socket.io";
 import http from "http";
 import { Server } from "socket.io";
 import { loadRoutes } from "./main/routes";
@@ -11,6 +10,8 @@ import { ENV } from "./config/env";
 import authRoutes, {
   googleAuthMiddleware,
 } from "./middileware/googleAuth.middlewear";
+import { SocketConnections } from "./socket.io";
+import { KafkaConnections } from "./kafka";
 
 // Initialize database connection
 db;
@@ -48,14 +49,18 @@ const io = new Server(httpServer, {
   },
 });
 
-// Call the function to load the routes
-loadRoutes(app);
+// Initialize the SocketManager singleton with the Socket.IO server instance
+SocketConnections.createSocketConnections(io);
 
-// Initialize Socket.IO
-setupSocket(io);
+// Initialize kafka
+KafkaConnections.createKafkaConnections();
 
 //passportMiddlewear
 googleAuthMiddleware(app);
+
+// Call the function to load the routes
+loadRoutes(app);
+
 // Use Auth Routes
 app.use("/api/v1/users", authRoutes);
 
