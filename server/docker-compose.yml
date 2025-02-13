@@ -42,7 +42,7 @@ services:
       # Advertised listeners: here we use the host IP from the env file so external clients can connect.
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${HOST_IP}:9092
       - ALLOW_PLAINTEXT_LISTENER=yes
-
+      - KAFKA_HEAP_OPTS=-Xms256m -Xmx512m
     networks:
       mynet:
         aliases:
